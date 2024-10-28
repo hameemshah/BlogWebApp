@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: arial;
+            margin: 0;
+        }
+        nav {
+            background: #ff5353;
+            padding: 20px 10px;
+        }
+        nav a {
+            color: #fff;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+            padding: 10px;
+        }
+        li {
+            display: inline-flex;
+        }
+        main, header {
+            min-width: 960px;
+            margin: 30px auto;
+            padding: 0 10px;
+            color: #333;
+        }
+        .google-btn {
+            color: #fff;
+            text-decoration: none;
+            font-style: 18px;
+            padding: 10px;
+            background: #ff5353;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/auth">Home</a></li>
+            <li><a href="/auth/login">Login</a></li>
+            <li><a href="/auth/logout">Logout</a></li>
+        </ul>
+    </nav>
+    <header>
+        <h1>Login using...</h1>
+    </header>
+    <main>
+        <a href="/auth/google" class="google-btn">Google</a>
+    </main>
+</body>
+</html>

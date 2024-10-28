@@ -5,7 +5,7 @@ const index = async (req, res) => {
     try {
         const result = await db.query("SELECT * FROM posts");
         const posts = result.rows;
-        res.render("index.ejs", { posts: posts });
+        res.render("index.ejs", { posts: posts, user: req.user });
     } catch (err) {
         console.log(err);
         res.send("Error retreiving posts.");
@@ -13,7 +13,7 @@ const index = async (req, res) => {
 }
 
 const about = (req, res) => {
-    res.render("about.ejs")
+    res.render("about.ejs", { user: req.user })
 }
 
 const post = async (req, res) => {
@@ -21,10 +21,10 @@ const post = async (req, res) => {
     try {
         const result = await db.query("SELECT * FROM posts WHERE id = $1", [postId]);
         const post = result.rows;
-        if (post.length === 0) 
+        if (post.length === 0)
             res.send("No such blog exisists.");
         else
-        res.render("post.ejs", { post: post[0] });
+            res.render("post.ejs", { post: post[0], user: req.user });
     } catch (err) {
         console.log(err);
         res.send("Cannot retreive the post.");
@@ -32,62 +32,74 @@ const post = async (req, res) => {
 }
 
 const create = (req, res) => {
-    const post = { id: Math.floor(Math.random() * 100), author: "", title: "", subtitle: "", content: "" };
-    res.render("create.ejs", { post: post, id: 0 });
+    if (req.user) {
+        const post = { id: Math.floor(Math.random() * 100), author: "", title: "", subtitle: "", content: "" };
+        res.render("create.ejs", { post: post, id: 0, user: req.user });
+    } else {
+        res.redirect('/auth/login');
+    }
 }
 
 const del = async (req, res) => {
-    const Id = req.params.post_id;
-    // Find the index of the post with the given ID
-    try {
-        const result = await db.query("SELECT * FROM posts WHERE id = $1", [Id]);
-        const found = result.rows;
-        if (found.length === 0) {
-            // No post found
-            res.status(404).send("No post with this id found.");
-        } else {
-            // If a post with the given ID is found, remove it
-            try {
-                db.query("DELETE FROM posts WHERE id = $1", [Id]);
-                res.redirect("/");
-            } catch (err) {
-                console.log(err);
-                res.status(501).send("Error deleting post");
+    if (req.user) {
+        const Id = req.params.post_id;
+        // Find the index of the post with the given ID
+        try {
+            const result = await db.query("SELECT * FROM posts WHERE id = $1", [Id]);
+            const found = result.rows;
+            if (found.length === 0) {
+                // No post found
+                res.status(404).send("No post with this id found.");
+            } else {
+                // If a post with the given ID is found, remove it
+                try {
+                    db.query("DELETE FROM posts WHERE id = $1", [Id]);
+                    res.redirect("/");
+                } catch (err) {
+                    console.log(err);
+                    res.status(501).send("Error deleting post");
+                }
             }
+        } catch (err) {
+            console.log(err);
+            res.status(501).send("Error finding the post.");
         }
-    } catch (err) {
-        console.log(err);
-        res.status(501).send("Error finding the post.");
+    } else {
+        res.redirect('/auth/login');
     }
 }
 
 const edit = async (req, res) => {
-    const Id = req.params.post_id;
-    try {
-        const result = await db.query("SELECT * FROM posts WHERE id = $1", [Id]);
-        const found = result.rows;
-        if (found.length === 0) {
-            // No post found
-            res.status(404).send("Post not found.");
-        } else {
-            // If a post with the given ID is found, get the post details from database
-            const post = {
-                id: found[0].id,
-                title: found[0].title,
-                subtitle: found[0].subtitle,
-                author: found[0].author,
-                content: found[0].content,
-                day: found[0].day,
-                month: found[0].month,
-                year: found[0].year,
-                link: found[0].link,
-                imageurl: found[0].imageurl,
+    if (req.user) {
+        const Id = req.params.post_id;
+        try {
+            const result = await db.query("SELECT * FROM posts WHERE id = $1", [Id]);
+            const found = result.rows;
+            if (found.length === 0) {
+                // No post found
+                res.status(404).send("Post not found.");
+            } else {
+                // If a post with the given ID is found, get the post details from database
+                const post = {
+                    id: found[0].id,
+                    title: found[0].title,
+                    subtitle: found[0].subtitle,
+                    author: found[0].author,
+                    content: found[0].content,
+                    day: found[0].day,
+                    month: found[0].month,
+                    year: found[0].year,
+                    link: found[0].link,
+                    imageurl: found[0].imageurl,
+                }
+                res.render("create.ejs", { post: post, id: Id, user: req.user });
             }
-            res.render("create.ejs", { post: post, id: Id });
+        } catch (err) {
+            console.log(err);
+            res.status(500).send("Error deleting the post.");
         }
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("Error deleting the post.");
+    } else {
+        res.redirect('/auth/login');
     }
 }
 
@@ -127,7 +139,7 @@ const create_post = async (req, res) => {
 }
 
 const contact = (req, res) => {
-    res.render("contact.ejs");
+    res.render("contact.ejs", { user: req.user });
 }
 
 const contact_post = async (req, res) => {

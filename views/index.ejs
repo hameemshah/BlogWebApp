@@ -27,10 +27,12 @@
                             <h3 class="post-subtitle"><%= post.subtitle %></h3>
                         </a>
                     </div>
+                    <% if (user) { %>
                     <div class="col-lg-1">
                         <a href="/edit/<%= post.id %>"><i class="fa-solid fa-pen-to-square"></i></a>
                         <a href="/delete/<%= post.id %>"><i class="fa-solid fa-trash"></i></a>
                     </div>
+                    <% } %>
                     <p class="post-meta">
                         Posted by
                         <a href="<%= post.link %>" target="_blank"><%= post.author %></a>

@@ -248,3 +248,8 @@ header.masthead .post-heading .meta a {
     font-size: 2.25rem;
   }
 }
+
+.thumbnail {
+  border-radius: 50%;
+  margin-right: 2rem;
+}
