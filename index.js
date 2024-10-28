@@ -9,8 +9,7 @@ import passportSetup from "./config/passport-setup.js";
 
 env.config();
 
-const hostname = process.env.HOST;
-const port = process.env.PORT;
+const port = process.env.PORT || 5000;
 
 // Express app
 const app = express();
@@ -36,6 +35,6 @@ app.use(router);
 
 
 // Create server
-app.listen(port, hostname, () => {
-    console.log(`Server started at http://${hostname}:${port}`);
+app.listen(port, () => {
+    console.log(`Server started at port ${port}`);
 })
