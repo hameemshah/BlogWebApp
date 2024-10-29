@@ -23,12 +23,13 @@ app.use(
       cookie: { secure: false }     // Set to true if using HTTPS
     })
   );
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
 
 // Initilize passport
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static("public"));
 
 app.use('/auth', authRoutes);
 app.use(router);

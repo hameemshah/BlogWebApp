@@ -3,7 +3,15 @@ import db from "../models/model.js";
 
 const index = async (req, res) => {
     try {
-        const result = await db.query("SELECT * FROM posts");
+        const result = await db.query(`
+            SELECT posts.id, posts.title, posts.subtitle, posts.author, posts.content, posts.imageurl, posts.user_id,
+                   EXTRACT(YEAR FROM posts.created_at) AS year,
+                   EXTRACT(MONTH FROM posts.created_at) AS month,
+                   EXTRACT(DAY FROM posts.created_at) AS day
+            FROM posts 
+            JOIN users ON posts.user_id = users.id
+             WHERE users.flag = true
+          `);
         const posts = result.rows;
         res.render("index.ejs", { posts: posts, user: req.user });
     } catch (err) {
@@ -32,16 +40,11 @@ const post = async (req, res) => {
 }
 
 const create = (req, res) => {
-    if (req.user) {
-        const post = { id: Math.floor(Math.random() * 100), author: "", title: "", subtitle: "", content: "" };
-        res.render("create.ejs", { post: post, id: 0, user: req.user });
-    } else {
-        res.redirect('/auth/login');
-    }
+        const post = { id: 0, author: "", title: "", subtitle: "", content: "" };
+        res.render("create.ejs", { post: post, user: req.user });
 }
 
 const del = async (req, res) => {
-    if (req.user) {
         const Id = req.params.post_id;
         // Find the index of the post with the given ID
         try {
@@ -64,13 +67,9 @@ const del = async (req, res) => {
             console.log(err);
             res.status(501).send("Error finding the post.");
         }
-    } else {
-        res.redirect('/auth/login');
-    }
 }
 
 const edit = async (req, res) => {
-    if (req.user) {
         const Id = req.params.post_id;
         try {
             const result = await db.query("SELECT * FROM posts WHERE id = $1", [Id]);
@@ -92,50 +91,36 @@ const edit = async (req, res) => {
                     link: found[0].link,
                     imageurl: found[0].imageurl,
                 }
-                res.render("create.ejs", { post: post, id: Id, user: req.user });
+                res.render("create.ejs", { post: post, user: req.user });
             }
         } catch (err) {
             console.log(err);
             res.status(500).send("Error deleting the post.");
         }
-    } else {
-        res.redirect('/auth/login');
-    }
 }
 
 const create_post = async (req, res) => {
-    const today = new Date();
-    const day = today.getDate();
-    const monthNames = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
-    const month = monthNames[today.getMonth()];
-    const year = today.getFullYear();
-
-    if (req.body.id === null) {
-        try {
-
-            const result = await db.query("INSERT INTO posts (title, subtitle, author, content, day, month, year, link, imageurl) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 )", [req.body.title, req.body.subtitle, req.body.name, req.body.content, day, month, year, req.body.link, req.body.url]);
-        } catch (err) {
-            if (err.code === "23505") {
-                res.status(409).send("Post already exists with the same unique value.");
-            } else {
+        if (req.body.id == 0) {
+            try {
+                await db.query("INSERT INTO posts (title, subtitle, author, content, imageurl, user_id) VALUES ($1, $2, $3, $4, $5, $6)", [req.body.title, req.body.subtitle, req.user.username, req.body.content, req.body.url, req.user.id]);
+            } catch (err) {
+                if (err.code === "23505") {
+                    res.status(409).send("Post already exists with the same unique value.");
+                } else {
+                    console.log(err);
+                    res.status(500).send("Error inserting values into the database.");
+                }
+            }
+        } else {
+            try {
+                // Update the record if id is defined
+                await db.query("UPDATE posts SET title = $1, subtitle = $2, author = $3, content = $4, imageurl = $5, user_id = $6 WHERE id = $7", [req.body.title, req.body.subtitle, req.user.username, req.body.content, req.body.url, req.user.id, req.body.id]);
+            } catch (err) {
                 console.log(err);
-                res.status(500).send("Error inserting values into the database.");
+                res.send("Error occurred whilst updating.");
             }
         }
-    } else {
-        try {
-            // Update the record if id is defined
-            const result1 = await db.query("DELETE FROM posts WHERE id = $1", [req.body.id]);
-            const result = await db.query("INSERT INTO posts (id, title, subtitle, author, content, day, month, year, link, imageurl) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10 )", [req.body.id, req.body.title, req.body.subtitle, req.body.name, req.body.content, day, month, year, req.body.link, req.body.url]);
-        } catch (err) {
-            console.log(err);
-            res.send("Error occurred");
-        }
-    }
-    res.redirect("/");
+        res.redirect("/");
 }
 
 const contact = (req, res) => {

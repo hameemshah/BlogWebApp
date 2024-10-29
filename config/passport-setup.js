@@ -35,14 +35,14 @@ passport.use(new GoogleStrategy({
                 try {
                     const result_ = await db.query("INSERT INTO users (username, googleid, thumbnail) VALUES ($1, $2, $3)",[profile.displayName, profile.id, profile.photos[0].value]);
                     const newUser = result_.rows[0];
-                    done(null, newUser);
+                    return done(null, newUser);
                 } catch (err) {
                     console.log('Error saving google user.');
                     console.log(err);
                 }
             } else {
                 const currentUser = user[0];
-                done(null, currentUser);
+                return done(null, currentUser);
             }
         } catch (err) {
             console.log('Error checking user exists');

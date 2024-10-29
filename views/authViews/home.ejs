@@ -3,22 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Profile</title>
     <style>
         body {
-            font-family: arial;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             margin: 0;
         }
         nav {
-            background: #ff5353;
+            background: #b589e777;
             padding: 20px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         nav a {
+            border-radius: 5px;
             color: #fff;
             font-size: 18px;
             background: rgba(255, 255, 255, 0.2);
             text-decoration: none;
             padding: 10px;
+        }
+        ul {
+            text-align: right;
+            display: inline;
         }
         li {
             display: inline-flex;
@@ -28,29 +36,59 @@
             margin: 30px auto;
             padding: 0 10px;
             color: #333;
-        }
+        }   
         .google-btn {
             color: #fff;
             text-decoration: none;
             font-style: 18px;
             padding: 10px;
-            background: #ff5353;
+            background: #b589e777;
+        }
+        table {
+            margin: 0 auto;
+        }
+        td {
+            background-color: #b589e777;
+            padding: 1rem;
+            border-radius: 5px;
+        }
+        #flagForm {
+            display: none;
+            color: pink;
         }
     </style>
 </head>
 <body>
     <nav>
+        <div><a href="/auth"><img src="<%= user.thumbnail %>" width="50px" alt="thumbnail"></a></div>
         <ul>
-            <li><a href="/auth">Home</a></li>
+            <li><a href="/">Home</a></li>
             <li><a href="/auth/login">Login</a></li>
             <li><a href="/auth/logout">Logout</a></li>
         </ul>
     </nav>
     <header>
-        <h1>Login using...</h1>
+        <h1 style="text-align: center;">User Posts Info...</h1>
     </header>
     <main>
-        <a href="/auth/google" class="google-btn">Google</a>
+        <table>
+                <% posts.forEach(post => { %>
+                    <tr>
+                        <td><a href="/post/<%= post.id %>"><%= post.title %></a></td>
+                        <td><a href="/edit/<%= post.id %>">Edit</a></td>
+                        <td><a href="/delete/<%= post.id %>">Delete</a></td>
+                    </tr>
+            <%    });  %>
+            <% if (user.id == 1) { %>
+                <tr>
+            <% users.forEach(usr => { %>
+                <td><%= usr.username%></td>
+                <td><a href="auth/update-flag/?userId=<%= usr.id %>&userFlag=<%= usr.flag %>"><%= usr.flag %></a></td>
+                <td><%= usr.id %></td>
+            <%    });  %>
+                </tr>
+        <%    }  %>
+        </table>
     </main>
 </body>
 </html>
