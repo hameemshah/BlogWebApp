@@ -20,7 +20,10 @@ app.use(
       secret: process.env.secret,
       resave: false,               // Do not resave session if unmodified
       saveUninitialized: false,     // Do not save uninitialized sessions
-      cookie: { secure: false }     // Set to true if using HTTPS
+      cookie: { 
+        maxAge:7 * 24 * 60 * 60 * 1000, // 7 days
+        secure: false,  // Set to true if using HTTPS
+      }     
     })
   );
 

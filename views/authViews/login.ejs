@@ -4,63 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <style>
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            margin: 0;
-        }
-        nav {
-            background: #b589e777;
-            padding: 20px 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        nav a {
-            border-radius: 5px;
-            color: #fff;
-            font-size: 18px;
-            background: rgba(255, 255, 255, 0.2);
-            text-decoration: none;
-            padding: 10px;
-        }
-        ul {
-            text-align: right;
-            display: inline;
-        }
-        li {
-            display: inline-flex;
-        }
-        main, header {
-            min-width: 960px;
-            margin: 30px auto;
-            padding: 0 10px;
-            color: #333;
-        }
-        .google-btn {
-            color: #fff;
-            text-decoration: none;
-            font-style: 18px;
-            padding: 15px;
-            margin-left: 0.5rem;
-            border-radius: 5px;
-            background: #b589e777;
-        }
-    </style>
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+     <link href="/css/bootstrap.css" rel="stylesheet" />
+     <link href="/css/styles.css" rel="stylesheet" />
 </head>
 <body>
-    <nav>
-        <div><a href="/auth">Admin Panel</a></div>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/auth/login">Login</a></li>
-            <li><a href="/auth/logout">Logout</a></li>
-        </ul>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Blog Home</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
     </nav>
-    <header>
-        <h1>Login Using...</h1>
-    </header>
-        <a href="/auth/google" class="google-btn">Google</a>
-    </main>
+
+    <!-- Login Section -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <h2 class="text-center mb-4">Login</h2>
+                        <form method="post" action="/auth/login">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </div>
+                        </form>
+                        
+                        <div class="text-center my-3">or</div>
+                        
+                        <div class="d-grid gap-2">
+                            <a href="/auth/google" class="btn btn-danger"><i class="fa-brands fa-google"></i></i> Login with Google</a>
+                            <a href="/auth/facebook" class="btn btn-primary"><i class="fa-brands fa-facebook"></i> Login with Facebook</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

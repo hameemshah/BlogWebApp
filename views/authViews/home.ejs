@@ -1,94 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
-    <style>
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            margin: 0;
-        }
-        nav {
-            background: #b589e777;
-            padding: 20px 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        nav a {
-            border-radius: 5px;
-            color: #fff;
-            font-size: 18px;
-            background: rgba(255, 255, 255, 0.2);
-            text-decoration: none;
-            padding: 10px;
-        }
-        ul {
-            text-align: right;
-            display: inline;
-        }
-        li {
-            display: inline-flex;
-        }
-        main, header {
-            min-width: 960px;
-            margin: 30px auto;
-            padding: 0 10px;
-            color: #333;
-        }   
-        .google-btn {
-            color: #fff;
-            text-decoration: none;
-            font-style: 18px;
-            padding: 10px;
-            background: #b589e777;
-        }
-        table {
-            margin: 0 auto;
-        }
-        td {
-            background-color: #b589e777;
-            padding: 1rem;
-            border-radius: 5px;
-        }
-        #flagForm {
-            display: none;
-            color: pink;
-        }
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+        type="text/css" />
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"
+        rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <link href="/css/styles.css" rel="stylesheet" />
 </head>
+
 <body>
-    <nav>
-        <div><a href="/auth"><img src="<%= user.thumbnail %>" width="50px" alt="thumbnail"></a></div>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/auth/login">Login</a></li>
-            <li><a href="/auth/logout">Logout</a></li>
-        </ul>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <div>
+                <a class="navbar-brand" href="/">Blog Home</a>
+            </div>
+            <a href="/auth"><img style="border-radius: 50%;" src="<%= user.thumbnail %>" width="50px" alt="thumbnail" /></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
     </nav>
-    <header>
-        <h1 style="text-align: center;">User Posts Info...</h1>
-    </header>
-    <main>
-        <table>
-                <% posts.forEach(post => { %>
+    <div class="container mt-4">
+        <h2>User Posts</h2>
+        <hr/>
+        <!-- Table for Posts -->
+        <div class="table-responsive mb-4">
+            <table class="table table-striped table-bordered">
+                <thead>
                     <tr>
-                        <td><a href="/post/<%= post.id %>"><%= post.title %></a></td>
-                        <td><a href="/edit/<%= post.id %>">Edit</a></td>
-                        <td><a href="/delete/<%= post.id %>">Delete</a></td>
+                        <th>Uid</th>
+                        <th>Pid</th>
+                        <th>Title</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                     </tr>
-            <%    });  %>
-            <% if (user.id == 1) { %>
-                <tr>
-            <% users.forEach(usr => { %>
-                <td><%= usr.username%></td>
-                <td><a href="auth/update-flag/?userId=<%= usr.id %>&userFlag=<%= usr.flag %>"><%= usr.flag %></a></td>
-                <td><%= usr.id %></td>
-            <%    });  %>
-                </tr>
-        <%    }  %>
-        </table>
-    </main>
+                </thead>
+                <tbody>
+                    <% posts.forEach(post => { %>
+                        <tr>
+                            <td style="width: 5%;"><%= post.user_id %></td>
+                            <td style="width: 5%;"><%= post.id %></td>
+                            <td>
+                                <a href="/post/<%= post.id %>">
+                                    <%= post.title %>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/edit/<%= post.id %>" class="btn btn-warning btn-sm">Edit</a>
+                            </td>
+                            <td>
+                                <a href="/delete/<%= post.id %>" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    
+        <!-- Table for User Information (Visible only to Admin) -->
+        <% if (user.id == 1 || user.id == 2) { %>
+            <h2>User Status</h2>
+            <hr/>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Thumbnail</th>
+                            <th>Username</th>
+                            <th>Flag</th>
+                            <th>Delete User</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% users.forEach(usr => { %>
+                            <tr>
+                                <td style="width: 5%;"><%= usr.id %></td>
+                                <th style="width: 5%;" ><img src="<%= usr.thumbnail %>" class="thumbnail" alt="thumbanil" width="50px"></th>
+                                <td><%= usr.username %> <% if (usr.id == 1)  {%> <span style="color: green;">(Admin)</span> <% } %></td>
+                                <td>
+                                    <a href="/auth/update-flag/?userId=<%= usr.id %>&userFlag=<%= usr.flag %>" class="btn btn-info btn-sm flag"><%=usr.flag%></a>
+                                </td>
+                                <td>
+                                    <a href="/auth/deleteUser/<%= usr.id %>" class="btn btn-danger btn-sm">Delete</a>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </div>
+    <script>
+        const flag = document.getElementsByClassName('flag');
+        for (const element of flag) {
+            if (element.innerHTML == 'false') {
+                element.style.backgroundColor ='#ff372999';
+            }
+        }
+        // flagBtn.style.backgroundColor = '#17a2b899';
+    </script>
 </body>
+
 </html>
