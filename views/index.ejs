@@ -24,8 +24,8 @@
                     <div class="col-11">
                         <a href="/post/<%= post.id %>">
                             <h2 class="post-title"><%= post.title %></h2>
-                            <h3 class="post-subtitle"><%= post.subtitle %></h3>
                         </a>
+                        <h6 class="post-subtitle"><%= post.subtitle %></h6>
                     </div>
                     <% if (user && user.id === post.user_id) { %>
                     <div class="col-1" style="display: flex; flex-direction: column; justify-content: space-between;">

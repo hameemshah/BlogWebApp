@@ -25,7 +25,7 @@
                         <form action="/contact" id="contactForm" method="post">
                             <div class="mb-3">
                                 <label for="name">Name</label>
-                                <input class="form-control" name="name" id="name" type="text" placeholder=" " required />
+                                <input class="form-control" name="name" id="name" type="text" placeholder=" " min="3" required />
                                 
                             </div>
                             <div class="mb-3">
@@ -35,12 +35,12 @@
                             </div>
                             <div class="mb-3">
                                 <label for="phone">Phone Number</label>
-                                <input class="form-control" name="phone" id="phone" type="tel" placeholder=" " />
+                                <input class="form-control" name="phone" id="phone" type="tel" min="10" placeholder=" " />
                                 
                             </div>
                             <div class="mb-3">
                                 <label for="message">Message</label>
-                                <textarea class="form-control" name="message" id="message" placeholder=" " style="height: 12rem"
+                                <textarea class="form-control" name="message" id="message" min="10" placeholder=" " style="height: 12rem"
                                     required></textarea>
                             </div>
                             <br />

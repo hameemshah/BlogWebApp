@@ -13,6 +13,11 @@ const authCheck = (req, res, next) => {
     next();
 }
 
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) return next();
+    res.status(401).send("Unauthorized");
+}
+
 auth.get('/', authController.profile);
 // get login page
 auth.get('/login', authCheck, authController.login);
@@ -26,5 +31,8 @@ auth.get('/google/redirect',passport.authenticate('google') ,authController.goog
 auth.get('/update-flag', authController.updateFlag);
 // delete the user
 auth.get('/deleteUser/:user_id', authController.delUser);
-
+// User delete themselves
+auth.get('/userDelete/:user_id', authController.userDelete);
+// User updates themselves
+auth.post('/userUpdate', ensureAuthenticated, authController.userUpdate);
 export default auth;

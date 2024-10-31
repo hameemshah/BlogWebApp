@@ -96,6 +96,49 @@ const delUser = async (req, res) => {
     }
 }
 
+const userDelete = async (req, res) => {
+    const Id = req.params.user_id;
+    if (req.user.id == Id) {
+        if (Id == 1) {
+            res.status(501).send("Can't delete admin");
+        } else {
+            try {
+                req.logout(err => {
+                    if (err) {
+                        return next(err);
+                    }
+                });
+                await db.query("DELETE FROM users WHERE id = $1", [Id]);
+                res.redirect("/");
+            } catch (error) {
+                console.log(error);
+                res.status(500).send("Failed to delete the user.");
+            }
+        }
+    } else {
+        res.status(500).send("Forbidden");
+    }
+}
+
+const userUpdate = async (req, res) => {
+        try {
+            await db.query("UPDATE users SET username = $1, thumbnail = $2 WHERE id = $3", [req.body.username, req.body.thumbnail, req.user.id]);
+            res.redirect("/auth");
+        } catch (err) {
+            console.log(err);
+            res.status(500).send("Error updatig user profile");
+        }
+}
+
 export default {
-    login, google, logout, google_redirect, profile, updateFlag, login_post, delUser
+    login,
+    google,
+    logout,
+    google_redirect,
+    profile,
+    updateFlag,
+    login_post,
+    delUser,
+    userDelete,
+    userUpdate
 }

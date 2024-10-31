@@ -23,19 +23,26 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <div>
-                <a class="navbar-brand" href="/">Blog Home</a>
-            </div>
-            <a href="/auth"><img style="border-radius: 50%;" src="<%= user.thumbnail %>" width="50px" alt="thumbnail" /></a>
+            <img style="border-radius: 50%;" src="<%= user.thumbnail %>" width="50px" alt="thumbnail" />
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/auth/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
     <div class="container mt-4">
-        <h2>User Posts</h2>
-        <hr/>
+        <h2>My Blogs</h2>
+        <hr />
         <!-- Table for Posts -->
         <div class="table-responsive mb-4">
             <table class="table table-striped table-bordered">
@@ -49,10 +56,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% posts.forEach(post => { %>
+                    <% posts.forEach(post=> { %>
                         <tr>
-                            <td style="width: 5%;"><%= post.user_id %></td>
-                            <td style="width: 5%;"><%= post.id %></td>
+                            <td style="width: 5%;">
+                                <%= post.user_id %>
+                            </td>
+                            <td style="width: 5%;">
+                                <%= post.id %>
+                            </td>
                             <td>
                                 <a href="/post/<%= post.id %>">
                                     <%= post.title %>
@@ -65,15 +76,15 @@
                                 <a href="/delete/<%= post.id %>" class="btn btn-danger btn-sm">Delete</a>
                             </td>
                         </tr>
-                    <% }); %>
+                        <% }); %>
                 </tbody>
             </table>
         </div>
-    
+
         <!-- Table for User Information (Visible only to Admin) -->
-        <% if (user.id == 1 || user.id == 2) { %>
+        <% if (user.id==1 || user.id==2) { %>
             <h2>User Status</h2>
-            <hr/>
+            <hr />
             <div class="table-responsive">
                 <table class="table table-striped table-bordered">
                     <thead>
@@ -86,33 +97,99 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% users.forEach(usr => { %>
+                        <% users.forEach(usr=> { %>
                             <tr>
-                                <td style="width: 5%;"><%= usr.id %></td>
-                                <th style="width: 5%;" ><img src="<%= usr.thumbnail %>" class="thumbnail" alt="thumbanil" width="50px"></th>
-                                <td><%= usr.username %> <% if (usr.id == 1)  {%> <span style="color: green;">(Admin)</span> <% } %></td>
+                                <td style="width: 5%;">
+                                    <%= usr.id %>
+                                </td>
+                                <th style="width: 5%;"><img src="<%= usr.thumbnail %>" class="thumbnail" alt="thumbanil"
+                                        width="50px"></th>
                                 <td>
-                                    <a href="/auth/update-flag/?userId=<%= usr.id %>&userFlag=<%= usr.flag %>" class="btn btn-info btn-sm flag"><%=usr.flag%></a>
+                                    <%= usr.username %>
+                                        <% if (usr.id==1) {%> <span style="color: green;">(Admin)</span>
+                                            <% } %>
+                                </td>
+                                <td>
+                                    <a href="/auth/update-flag/?userId=<%= usr.id %>&userFlag=<%= usr.flag %>"
+                                        class="btn btn-info btn-sm flag">
+                                        <%=usr.flag%>
+                                    </a>
                                 </td>
                                 <td>
                                     <a href="/auth/deleteUser/<%= usr.id %>" class="btn btn-danger btn-sm">Delete</a>
                                 </td>
                             </tr>
-                        <% }); %>
+                            <% }); %>
                     </tbody>
                 </table>
             </div>
-        <% } %>
-    </div>
-    <script>
-        const flag = document.getElementsByClassName('flag');
-        for (const element of flag) {
-            if (element.innerHTML == 'false') {
-                element.style.backgroundColor ='#ff372999';
-            }
-        }
-        // flagBtn.style.backgroundColor = '#17a2b899';
-    </script>
+            <% } %>
+                <!-- Table for account control -->
+                <h2>My Account Details</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <th>Uid</th>
+                            <th>Username</th>
+                            <th>Profile Image</th>
+                            <th>Edit Profile</th>
+                            <th>Delete Profile</th>
+                        </thead>
+                        <tr>
+                            <td style="width: 5%;">
+                                <%= user.id%>
+                            </td>
+                            <td>
+                                <%= user.username%>
+                            </td>
+                            <td><img src="<%= user.thumbnail%>" alt="thumbnail" width="50px"></td>
+                            <td>
+                                <button id="uEdit" class="btn btn-warning btn-sm">Edit</button>
+                                <button id="uSubmit" onclick="submitForm()" class="btn btn-success btn-sm">Submit</button>
+                            </td>
+                            <td>
+                                <a href="/auth/userDelete/<%= user.id %>" id="uDelete" onclick="return confirmDelete()" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- Edit user form -->
+                <div class="container my-5" id="editForm">
+                    <div class="row justify-content-left">
+                        <div class="col-md-4">
+                            <div class="card shadow">
+                                <div class="card-body p-4">
+                                    <form action="/auth/userUpdate" method="post" id="userEditForm" class="form form-responsive">
+                                        <div class="mb-3">
+                                            <label for="username" class="form-label"> New Username</label>
+                                            <input type="text" class="form-control" id="username" value="<%= user.username %>" name="username"
+                                                required>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card shadow">
+                                <div class="card-body p-4">
+                                    <div class="mb-3">
+                                        <label for="thumbnail" class="form-label"> New Profile Image (URL)</label>
+                                        <input type="url" class="form-control" id="thumbnail" name="thumbnail" value="<%= user.thumbnail %>" required>
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bootstrap Bundle with Popper -->
+                <script
+                    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+                <script src="/js/scripts.js"></script>
+                <script>
+                    changeFlagBtnColor();
+                    editSubmitSwitcher();
+                </script>
 </body>
 
 </html>
