@@ -50,8 +50,8 @@ auth.get('/signup', authCheck, authController.signup);
 //Post to signup
 auth.post('/signup', otpVerify, passport.authenticate('local'), authController.signup_post);
 // Get request by otp button
-auth.get('/genOtp', (req, res) => {
-    otp.send();
+auth.post('/genOtp', (req, res) => {
+    otp.send(req.body.addr); 
 })
 
 export default auth;

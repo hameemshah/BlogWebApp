@@ -15,6 +15,7 @@ const port = process.env.PORT || 5000;
 const app = express();
 
 // Middleware
+app.use(express.json()); 
 app.use(
     session({
       secret: process.env.secret,

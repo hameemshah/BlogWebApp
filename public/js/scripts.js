@@ -53,15 +53,15 @@ function otpBtn() {
     const btn = document.getElementById('otpBtnId');
     const otpMsg = document.getElementById('otpMsg');
     const email = document.getElementById('username');
-     if (isValidEmail(email.value)) {
+    if (isValidEmail(email.value)) {
         otpMsg.style.display = 'block';
         btn.disabled = true;
-        fetch('/auth/genOtp');
+        postData(email.value);
         otpMsg.innerHTML = "A four digit otp has been send to your email address, check the spam folder.";
         setTimeout(() => {
             btn.disabled = false;
         }, 3000);
-        
+
     } else {
         otpMsg.style.display = "block";
         otpMsg.innerHTML = "Enter Correct Email First!";
@@ -85,3 +85,19 @@ function validatePassword() {
 function isValidEmail(email) {
     return /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(email);
 }
+
+// otp post data
+async function postData(destination) {
+    axios.post('/auth/genOtp', {
+        addr: destination
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+}
+
+
+
