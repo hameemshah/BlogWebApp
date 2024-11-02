@@ -1,6 +1,7 @@
 import passport from "passport";
 import { Router } from "express";
 import db from "../models/model.js";
+import bcrypt from "bcrypt";
 
 const router = Router();
 
@@ -61,7 +62,7 @@ const updateFlag = async (req, res) => {
     }
 }
 
-const login_post = (req, res) => {
+const signup_post = (req, res) => {
     res.redirect("/");
 }
 
@@ -130,15 +131,45 @@ const userUpdate = async (req, res) => {
         }
 }
 
+const signup = async (req, res) => {
+    res.render('authViews/signup.ejs');
+}
+
+const login_post = async (req, res, next) => {
+    try {
+        const { username, password } = req.body;
+
+        // Query the user from the PostgreSQL database
+        const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
+        const user = result.rows[0];
+
+        // Check if user exists and password matches
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(401).send("Email or Password does't match");
+        }
+
+        // Log the user in
+        req.login(user, (err) => {
+            if (err) return next(err);
+            return res.redirect('/');
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+
 export default {
     login,
     google,
+    login_post,
     logout,
     google_redirect,
     profile,
     updateFlag,
-    login_post,
+    signup_post,
     delUser,
     userDelete,
-    userUpdate
+    userUpdate,
+    signup
 }

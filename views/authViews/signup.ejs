@@ -1,0 +1,48 @@
+<%- include("./partials/header.ejs") %>
+    <!-- Login Section -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <h2 class="text-center mb-4">Signup New Account</h2>
+                        <form method="post" action="/auth/signup" id="signup" name="signup">
+
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Enter Your Email</label>
+                                <div>
+                                    <input type="email" class="form-control" id="username" name="username" min="3" placeholder="Enter your working Email address . . . " autofocus autocomplete="email" required>
+                                    <div id="otpMsg" style="display: none; font-size: small; color: maroon;"></div>
+                                    <button onclick="otpBtn()" id="otpBtnId" style="margin-top: 0.2rem;" type="button btn-primary">Generate OTP</button>
+                                    <input type="text" name="OTP" minlength="4" maxlength="4" size="7" placeholder="Enter OTP" required>
+                                </div>
+                                
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" min="4" placeholder="Create a new password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirm" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" name="confirm" id="confirm" onfocusout="validatePassword()" placeholder="Confirm the above password" min="4" required>
+                            </div>
+                            <div class="mb-3">
+                                <span id="error">⚠️ Password and confirm password should be same.</span>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Signup</button>
+                            </div>
+                        </form>
+                        
+                        <div class="text-center my-3">or</div>
+                        
+                        <div class="d-grid gap-2">
+                            <a href="/auth/google" class="btn btn-danger"><i class="fa-brands fa-google"></i></i> Signup with Google</a>
+                            <a href="/auth/facebook" class="btn btn-primary"><i class="fa-brands fa-facebook"></i> Signup with Facebook</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<%- include ("./partials/footer.ejs") %>

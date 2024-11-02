@@ -4,6 +4,8 @@ import { Strategy } from "passport-local";
 import GoogleStrategy from "passport-google-oauth20";
 import db from "../models/model.js";
 import env from "dotenv";
+
+
 env.config();
 
 passport.serializeUser((user, done) => {
@@ -46,7 +48,7 @@ passport.use(
                 return cb(null, user[0]);
             } else {
                 // wrong password, no user returned
-                return cb(null, false);
+                return cb('User already exists, try loggin in', false);
             }
         }
     } catch (error) {
