@@ -21,7 +21,10 @@
                 <% posts.forEach(post => { %>
                 <!-- Post preview-->
                 <div class="row post-preview">
-                    <div class="col-11">
+                    <div class="col-1">
+                        <img src="<%= post.thumbnail %>" alt="thumb" width="50px" class="thumbnail">
+                    </div>
+                    <div class="col-9" style="margin-left: 1rem;">
                         <a href="/post/<%= post.id %>">
                             <h2 class="post-title"><%= post.title %></h2>
                         </a>

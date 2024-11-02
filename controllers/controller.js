@@ -7,7 +7,8 @@ const index = async (req, res) => {
             SELECT posts.id, posts.title, posts.subtitle, posts.author, posts.content, posts.imageurl, posts.user_id,
                    EXTRACT(YEAR FROM posts.created_at) AS year,
                    EXTRACT(MONTH FROM posts.created_at) AS month,
-                   EXTRACT(DAY FROM posts.created_at) AS day
+                   EXTRACT(DAY FROM posts.created_at) AS day,
+                   users.thumbnail
             FROM posts 
             JOIN users ON posts.user_id = users.id
              WHERE users.flag = true 

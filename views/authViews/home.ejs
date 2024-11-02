@@ -33,7 +33,7 @@
                                 <a href="/edit/<%= post.id %>" class="btn btn-warning btn-sm">Edit</a>
                             </td>
                             <td>
-                                <a href="/delete/<%= post.id %>" class="btn btn-danger btn-sm">Delete</a>
+                                <a href="/delete/<%= post.id %>" onclick="return confirmDelete()" class="btn btn-danger btn-sm">Delete</a>
                             </td>
                         </tr>
                         <% }); %>
@@ -62,7 +62,7 @@
                                 <td style="width: 5%;">
                                     <%= usr.id %>
                                 </td>
-                                <th style="width: 5%;"><img src="<%= usr.thumbnail %>" class="thumbnail" alt="thumbanil"
+                                <th style="width: 5%;"><img src="<%= usr.thumbnail %>" class="thumbnail" alt="thumbnail"
                                         width="50px"></th>
                                 <td>
                                     <%= usr.username %>
@@ -76,7 +76,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="/auth/deleteUser/<%= usr.id %>" class="btn btn-danger btn-sm">Delete</a>
+                                    <a  href="/auth/deleteUser/<%= usr.id %>" class="btn btn-danger btn-sm">Delete</a>
                                 </td>
                             </tr>
                             <% }); %>
@@ -102,7 +102,7 @@
                             <td>
                                 <%= user.username%>
                             </td>
-                            <td><img src="<%= user.thumbnail%>" alt="thumbnail" width="50px"></td>
+                            <td><img src="<%= user.thumbnail%>" class="thumbnail" alt="thumbnail" width="50px"></td>
                             <td>
                                 <button id="uEdit" class="btn btn-warning btn-sm">Edit</button>
                                 <button id="uSubmit" onclick="submitForm()" class="btn btn-success btn-sm">Submit</button>
@@ -141,6 +141,7 @@
                         </div>
                     </div>
                 </div>
+
 <%- include("partials/footer.ejs") %>
 <script>
     changeFlagBtnColor();

@@ -9,7 +9,7 @@ function displayYear() {
 function changeFlagBtnColor() {
     const flag = document.getElementsByClassName('flag');
     for (const element of flag) {
-        if (element.innerHTML == 'false') {
+        if (element.innerText == 'false') {
             element.style.backgroundColor = '#ff372999';
         }
     }
