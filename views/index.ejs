@@ -33,7 +33,7 @@
                     <% if (user && user.id === post.user_id) { %>
                     <div class="col-1" style="display: flex; flex-direction: column; justify-content: space-between;">
                         <a href="/edit/<%= post.id %>"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <a href="/delete/<%= post.id %>"><i class="fa-solid fa-trash"></i></a>
+                        <a onclick="return confirmDelete()" href="/delete/<%= post.id %>"><i class="fa-solid fa-trash"></i></a>
                     </div>
                     <% } %>
                     <p class="post-meta">
