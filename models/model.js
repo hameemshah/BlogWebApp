@@ -9,6 +9,9 @@ const db = new pg.Client({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB,
+    ssl: {
+        rejectUnauthorized: false, // Use true for production with a valid certificate
+    },
 });
 
 try {
