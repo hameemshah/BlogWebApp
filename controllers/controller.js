@@ -30,14 +30,42 @@ const post = async (req, res) => {
     const postId = req.params.post_id;
     try {
         const result = await db.query("SELECT * FROM posts WHERE id = $1", [postId]);
+
+        const likes = await db.query(`
+            SELECT u.username, u.thumbnail
+            FROM likes l 
+            JOIN users u ON l.user_id = u.id 
+            WHERE l.post_id = $1
+        `, [postId]);
+        const counts = await db.query(`
+            SELECT 
+                (SELECT COUNT(*) FROM likes WHERE post_id = $1) AS like_count,
+                (SELECT COUNT(*) FROM comments WHERE post_id = $1) AS comment_count
+        `, [postId]);
+        // Fetch comments with usernames and thumbnails
+        const comments = await db.query(`
+                        SELECT u.username, u.thumbnail, c.content, c.created_at,
+                    EXTRACT(YEAR FROM c.created_at) AS year,
+                   EXTRACT(MONTH FROM c.created_at) AS month,
+                   EXTRACT(DAY FROM c.created_at) AS day
+                        FROM comments c 
+                        JOIN users u ON c.user_id = u.id 
+                        WHERE c.post_id = $1
+                    `, [postId]);
         const post = result.rows;
         if (post.length === 0)
             res.send("No such blog exisists.");
         else
-            res.render("post.ejs", { post: post[0], user: req.user });
+            res.render("post.ejs", { post: post[0], 
+                                    likes: likes.rows,
+                                    like_count: counts.rows[0].like_count,
+                                    comment_count: counts.rows[0].comment_count,
+                                    comments: comments.rows, 
+                                    user: req.user || null 
+                                });
     } catch (err) {
         console.log(err);
-        res.send("Cannot retreive the post.");
+        res.status(500).send("Error retreiving the post.");
     }
 }
 
@@ -148,6 +176,33 @@ const contact_post = async (req, res) => {
     }
 }
 
+const like = async (req, res) => {
+    const { postId } = req.params;
+    const userId = req.user.id;
+
+    try {
+        await db.query('INSERT INTO likes (user_id, post_id) VALUES ($1, $2)', [userId, postId]);
+        res.json({ success: true, message: 'Post liked!' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Error liking post.' });
+    }
+}
+
+const comment = async (req, res) => {
+    const { postId } = req.params;
+    const userId = req.user.id;
+    const { comment } = req.body;
+
+    try {
+        await db.query('INSERT INTO comments (user_id, post_id, content) VALUES ($1, $2, $3)', [userId, postId, comment]);
+        res.json({ success: true, message: 'Comment added!' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Error adding comment.' });
+    }
+}
+
 export default {
     index,
     about,
@@ -157,5 +212,7 @@ export default {
     edit,
     create_post,
     contact,
-    contact_post
+    contact_post,
+    like,
+    comment
 };

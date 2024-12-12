@@ -21,5 +21,23 @@ router.get("/edit/:post_id", authCheck, controller.edit);
 router.post("/create", authCheck, controller.create_post);
 router.get("/contact", controller.contact);
 router.post("/contact", controller.contact_post);
+router.post('/like/:postId', authCheck, controller.like);
+router.post('/comment/:postId', authCheck, controller.comment);
+router.get('/comments/:postId', async (req, res) => {
+    const { postId } = req.params;
+    try {
+        const comments = await db.query(`
+            SELECT u.username, u.thumbnail, c.content
+            FROM comments c 
+            JOIN users u ON c.user_id = u.id 
+            WHERE c.post_id = $1
+        `, [postId]);
+
+        res.json({ comments: comments.rows });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error fetching comments');
+    }
+});
 
 export default router;

@@ -268,3 +268,37 @@ header.masthead .post-heading .meta a {
 h1 {
   color: whitesmoke;
 }
+
+/* Like and comment section */
+.thumbnail {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+.likes-section, .comments-section {
+  margin-top: 20px;
+}
+.comment {
+  border-color: #dee2e6;
+}
+
+.comment-thumbnail {
+  width: 20px;
+  border-radius: 50%;
+}
+
+.comment-date {
+  font-size: xx-small;
+}
+
+.comment-username {
+  font-size: x-small;
+  font-weight:bold;
+}
+
+.comment-content {
+  margin: 0px 0px 0px 5em;
+  font-style: italic;
+  font-size: small;
+}

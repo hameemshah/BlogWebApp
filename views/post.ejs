@@ -26,15 +26,123 @@
     </div>
     <div class="text-center">
         <h6>posted by</h6>
-            <p><%= post.author %></p>
+        <p>
+            <%= post.author %>
+        </p>
     </div>
-    <!-- Likes & Comments
+
     <div class="container px-4 px-lg-5">
         <div class="row" style="display: flex; justify-content: center;">
-                <div class="col-2" style="text-align: center;"><i class="fa-regular fa-heart"></i>100</div>
-                <div class="col-2" style="text-align: center;"><i class="fa-regular fa-comment"></i>23</div>
-                <div class="col-2" style="text-align: center;"><i class="fa-solid fa-share"></i>5</div>
+            <div class="col-2" style="text-align: center;">
+                <% if (user) { %>
+                    <button class="btn like-button" data-post-id="<%= post.id %>">
+                        <i class="fa-regular fa-heart"></i><sub>
+                            <%= like_count %>
+                        </sub>
+                    </button>
+                    <% } else { %>
+                        <i onclick="alert('You must login to like')" class="fa-regular fa-heart"></i><sub>
+                            <%= like_count %>
+                        </sub>
+                        <% } %>
+            </div>
+            <div class="col-2" style="text-align: center;">
+                <% if (user) { %>
+                    <button class="btn comment-button" data-post-id="<%= post.id %>">
+                        <i class="fa-regular fa-comment"></i><sub>
+                            <%= comment_count %>
+                        </sub>
+                    </button>
+                    <% } else { %>
+                        <i onclick="alert('You must login to comment')" class="fa-regular fa-comment"></i><sub>
+                            <%= comment_count %>
+                        </sub>
+                        <% } %>
+            </div>
+
+            <div class="col-2" style="text-align: center;"><button id="share-btn" class="btn"><i class="fa-solid fa-share"></i></button></div>
         </div>
-    </div> -->
-    
+    </div>
+
+    <!-- Comments Section -->
+    <div class="container px-4 px-lg-5">
+        <div class="row" style="display: flex; justify-content: center;">
+            <div class="col-sm-4 comments-section">
+                <h3 style="text-align: left;">Comments</h3>
+                <% if (comments.length> 0) { %>
+                    <% comments.forEach(comment=> { %>
+                        <div class="comment">
+                            <img width="15px" src="<%= comment.thumbnail %>" alt=" " class="comment-thumbnail">
+                            <span class="comment-username">
+                                <%= comment.username %>:
+                            </span>
+                            <span class="comment-date">
+                                <%= comment.day %>-<%= comment.month %>-<%= comment.year %>
+                            </span>
+                            <p class="comment-content">
+                                <%= comment.content %>
+                            </p>
+                        </div>
+                        <% }) %>
+                            <% } else { %>
+                                <p>No comments yet. Be the first to comment!</p>
+                                <% } %>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.like-button').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const postId = button.dataset.postId;
+                try {
+                    const res = await fetch(`/like/${postId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const data = await res.json();
+                    alert(data.message);
+                } catch (err) {
+                    console.error('Error liking post:', err);
+                }
+            });
+        });
+
+        document.querySelectorAll('.comment-button').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const postId = button.dataset.postId;
+                const comment = prompt('Enter your comment:');
+
+                if (!comment) return;
+
+                try {
+                    const res = await fetch(`/comment/${postId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ comment })
+                    });
+                    const data = await res.json();
+                    alert(data.message);
+                } catch (err) {
+                    console.error('Error adding comment:', err);
+                }
+            });
+        });
+// share button
+    document.getElementById('share-btn').addEventListener('click', () => {
+        if (navigator.share) {
+            navigator.share({
+                title: '<%= post.title %>',
+                text: 'Check out this blog post!',
+                url: window.location.href // Use the current page URL
+            })
+            .then(() => console.log('Content shared successfully!'))
+            .catch((error) => console.error('Error sharing:', error));
+        } else {
+            alert('Sharing is not supported on this browser.');
+        }
+    });
+
+    </script>
     <%- include("partials/footer.ejs") %>
